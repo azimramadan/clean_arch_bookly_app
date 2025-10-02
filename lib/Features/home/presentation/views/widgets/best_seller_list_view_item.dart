@@ -1,6 +1,4 @@
-import 'package:bookly/core/utils/app_router.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 import '../../../../../constants.dart';
 import '../../../../../core/utils/assets.dart';
@@ -13,9 +11,7 @@ class BookListViewItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        GoRouter.of(context).push(AppRouter.kBookDetailsView);
-      },
+      onTap: () {},
       child: SizedBox(
         height: 125,
         child: Row(
@@ -29,7 +25,7 @@ class BookListViewItem extends StatelessWidget {
                     image: const DecorationImage(
                       fit: BoxFit.fill,
                       image: AssetImage(
-                        AssetsData.testImage,
+                        Assets.imagesBookImage,
                       ),
                     )),
               ),

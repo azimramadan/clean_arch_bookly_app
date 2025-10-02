@@ -1,0 +1,19 @@
+<svg width="204" height="204" viewBox="0 0 204 204" fill="none" xmlns="http://www.w3.org/2000/svg">
+<foreignObject x="0" y="-6.36563" width="204" height="210.366"><div xmlns="http://www.w3.org/1999/xhtml" style="backdrop-filter:blur(27.18px);clip-path:url(#bgblur_0_0_64_clip_path);height:100%;width:100%"></div></foreignObject><g filter="url(#filter0_d_0_64)" data-figma-bg-blur-radius="54.3656">
+<circle cx="98" cy="88" r="40" fill="white" fill-opacity="0.1"/>
+</g>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M94.5091 80.0753C93.3213 79.5663 92 80.4375 92 81.7298V93.8983C92 95.2804 93.4931 96.1468 94.693 95.4611L106.862 88.5077C108.152 87.7704 108.043 85.8757 106.678 85.2904L94.5091 80.0753Z" fill="white"/>
+<defs>
+<filter id="filter0_d_0_64" x="0" y="-6.36563" width="204" height="210.366" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+<feMorphology radius="2" operator="dilate" in="SourceAlpha" result="effect1_dropShadow_0_64"/>
+<feOffset dx="4" dy="14"/>
+<feGaussianBlur stdDeviation="30"/>
+<feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.07 0"/>
+<feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_0_64"/>
+<feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_0_64" result="shape"/>
+</filter>
+<clipPath id="bgblur_0_0_64_clip_path" transform="translate(0 6.36563)"><circle cx="98" cy="88" r="40"/>
+</clipPath></defs>
+</svg>
