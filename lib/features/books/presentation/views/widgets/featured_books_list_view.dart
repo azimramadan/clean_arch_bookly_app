@@ -1,5 +1,5 @@
-import 'package:bookly/Features/home/presentation/views/widgets/custom_book_item.dart';
 import 'package:bookly/core/utils/assets.dart';
+import 'package:bookly/features/books/presentation/views/widgets/custom_book_item.dart';
 import 'package:flutter/material.dart';
 
 class FeaturedBooksListView extends StatefulWidget {
@@ -23,11 +23,8 @@ class FeaturedBooksListViewState extends State<FeaturedBooksListView> {
   final List<String> bookImages =
       List.generate(10, (index) => Assets.imagesBookImage);
 
-  // معايير التخطيط
   final double _baseItemWidth = 140;
   final double _largeItemWidth = 160;
-  final double _itemSpacing = 4;
-  final double _sidePadding = 16;
 
   @override
   void initState() {
@@ -70,7 +67,7 @@ class FeaturedBooksListViewState extends State<FeaturedBooksListView> {
 
       // إذا لم نجد عنصر في الربع الأول، نأخذ الأقرب للبداية
       if (newFocusedIndex == -1) {
-        double totalItemWidth = _baseItemWidth + _itemSpacing;
+        double totalItemWidth = _baseItemWidth;
         newFocusedIndex = (_currentScrollOffset / totalItemWidth).round();
         newFocusedIndex = newFocusedIndex.clamp(0, bookImages.length - 1);
       }
@@ -89,8 +86,8 @@ class FeaturedBooksListViewState extends State<FeaturedBooksListView> {
 
   // حساب موقع العنصر على الشاشة
   double _getItemPosition(int index) {
-    double totalItemWidth = _baseItemWidth + _itemSpacing;
-    return (index * totalItemWidth) - _currentScrollOffset + _sidePadding;
+    double totalItemWidth = _baseItemWidth;
+    return (index * totalItemWidth) - _currentScrollOffset;
   }
 
   // حساب عرض العنصر
@@ -104,7 +101,7 @@ class FeaturedBooksListViewState extends State<FeaturedBooksListView> {
 
   // التمرير إلى عنصر معين
   void scrollToIndex(int index) {
-    double totalItemWidth = _baseItemWidth + _itemSpacing;
+    double totalItemWidth = _baseItemWidth;
     double targetOffset = index * totalItemWidth;
 
     _scrollController.animateTo(
@@ -117,12 +114,12 @@ class FeaturedBooksListViewState extends State<FeaturedBooksListView> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: MediaQuery.of(context).size.height * .3,
+      height: MediaQuery.of(context).size.height * .28,
       child: ListView.builder(
         controller: _scrollController,
         scrollDirection: Axis.horizontal,
-        padding: EdgeInsets.only(
-          left: _sidePadding,
+        padding: const EdgeInsets.only(
+          left: 20,
         ),
         physics: const BouncingScrollPhysics(),
         itemCount: bookImages.length,
