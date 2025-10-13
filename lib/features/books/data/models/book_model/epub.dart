@@ -1,4 +1,10 @@
+import 'package:hive/hive.dart';
+
+part 'epub.g.dart';
+
+@HiveType(typeId: 8)
 class Epub {
+  @HiveField(0)
   bool? isAvailable;
 
   Epub({this.isAvailable});

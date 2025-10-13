@@ -1,5 +1,12 @@
+import 'package:hive/hive.dart';
+
+part 'panelization_summary.g.dart';
+
+@HiveType(typeId: 4)
 class PanelizationSummary {
+  @HiveField(0)
   bool? containsEpubBubbles;
+  @HiveField(1)
   bool? containsImageBubbles;
 
   PanelizationSummary({

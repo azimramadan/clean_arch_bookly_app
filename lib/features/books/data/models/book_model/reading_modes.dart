@@ -1,5 +1,12 @@
+import 'package:hive/hive.dart';
+
+part 'reading_modes.g.dart';
+
+@HiveType(typeId: 3)
 class ReadingModes {
+  @HiveField(0)
   bool? text;
+  @HiveField(1)
   bool? image;
 
   ReadingModes({this.text, this.image});

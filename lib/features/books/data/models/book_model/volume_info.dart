@@ -1,26 +1,49 @@
+import 'package:hive/hive.dart';
+
 import 'image_links.dart';
 import 'industry_identifier.dart';
 import 'panelization_summary.dart';
 import 'reading_modes.dart';
 
+part 'volume_info.g.dart';
+
+@HiveType(typeId: 1)
 class VolumeInfo {
+  @HiveField(0)
   String? title;
+  @HiveField(1)
   String? subtitle;
+  @HiveField(2)
   List<String>? authors;
+  @HiveField(3)
   String? publishedDate;
+  @HiveField(4)
   List<IndustryIdentifier>? industryIdentifiers;
+  @HiveField(5)
   ReadingModes? readingModes;
+  @HiveField(6)
   int? pageCount;
+  @HiveField(7)
   String? printType;
+  @HiveField(8)
   List<String>? categories;
+  @HiveField(9)
   String? maturityRating;
+  @HiveField(10)
   bool? allowAnonLogging;
+  @HiveField(11)
   String? contentVersion;
+  @HiveField(12)
   PanelizationSummary? panelizationSummary;
+  @HiveField(13)
   ImageLinks? imageLinks;
+  @HiveField(14)
   String? language;
+  @HiveField(15)
   String? previewLink;
+  @HiveField(16)
   String? infoLink;
+  @HiveField(17)
   String? canonicalVolumeLink;
 
   VolumeInfo({

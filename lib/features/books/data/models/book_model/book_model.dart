@@ -1,16 +1,27 @@
 import 'package:bookly/features/books/domain/entities/book_entity.dart';
+import 'package:hive/hive.dart';
 
 import 'access_info.dart';
 import 'sale_info.dart';
 import 'volume_info.dart';
 
+part 'book_model.g.dart';
+
+@HiveType(typeId: 0)
 class BookModel extends BookEntity {
+  @HiveField(0)
   String? kind;
+  @HiveField(1)
   String? id;
+  @HiveField(2)
   String? etag;
+  @HiveField(3)
   String? selfLink;
+  @HiveField(4)
   VolumeInfo? volumeInfo;
+  @HiveField(5)
   SaleInfo? saleInfo;
+  @HiveField(6)
   AccessInfo? accessInfo;
 
   BookModel({
@@ -27,7 +38,7 @@ class BookModel extends BookEntity {
           author: extractAuthor(volumeInfo),
           imageUrl: volumeInfo?.imageLinks?.thumbnail ?? "",
           price: extractPrice(saleInfo),
-          rating: volumeInfo?.maturityRating ?? "N/A",
+          rating: volumeInfo?.maturityRating ?? "NotAvailable",
         );
 
   factory BookModel.fromJson(Map<String, dynamic> json) => BookModel(
