@@ -1,3 +1,4 @@
+import 'package:bookly/core/utils/hive_helper.dart';
 import 'package:bookly/features/books/data/models/book_model/book_model.dart';
 
 abstract class BooksLocalDataSource {
@@ -8,27 +9,43 @@ abstract class BooksLocalDataSource {
 }
 
 class BooksLocalDataSourceImpl implements BooksLocalDataSource {
+  const BooksLocalDataSourceImpl();
+
   @override
-  Future<void> cacheFeaturedBooks(List<BookModel> books) {
-    // TODO: implement cacheFeaturedBooks
-    throw UnimplementedError();
+  Future<void> cacheFeaturedBooks(List<BookModel> books) async {
+    final box = HiveHelper.featuredBooksBox;
+
+    for (final book in books) {
+      if (book.bookId.isEmpty) continue;
+      await box.put(book.bookId, book);
+    }
   }
 
   @override
-  Future<void> cacheNewestBooks(List<BookModel> books) {
-    // TODO: implement cacheNewestBooks
-    throw UnimplementedError();
+  Future<void> cacheNewestBooks(List<BookModel> books) async {
+    final box = HiveHelper.newestBooksBox;
+
+    for (final book in books) {
+      if (book.bookId.isEmpty) continue;
+      await box.put(book.bookId, book);
+    }
   }
 
   @override
-  Future<List<BookModel>> getCachedFeaturedBooks() {
-    // TODO: implement getCachedFeaturedBooks
-    throw UnimplementedError();
+  Future<List<BookModel>> getCachedFeaturedBooks() async {
+    final box = HiveHelper.featuredBooksBox;
+
+    if (box.isEmpty) return const [];
+
+    return box.values.toList();
   }
 
   @override
-  Future<List<BookModel>> getCachedNewestBooks() {
-    // TODO: implement getCachedNewestBooks
-    throw UnimplementedError();
+  Future<List<BookModel>> getCachedNewestBooks() async {
+    final box = HiveHelper.newestBooksBox;
+
+    if (box.isEmpty) return const [];
+
+    return box.values.toList();
   }
 }
