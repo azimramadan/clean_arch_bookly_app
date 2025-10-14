@@ -1,4 +1,4 @@
-import 'package:bookly/core/utils/hive_helper.dart';
+import 'package:bookly/core/utils/helpers/hive_helper.dart';
 import 'package:bookly/features/books/data/models/book_model/book_model.dart';
 
 abstract class BooksLocalDataSource {
