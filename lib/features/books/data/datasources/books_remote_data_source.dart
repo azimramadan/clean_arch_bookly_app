@@ -6,8 +6,8 @@ import '../../../../core/api/api_constants.dart';
 import '../../../../core/api/api_service.dart';
 
 abstract class BooksRemoteDataSource {
-  Future<List<BookModel>> getFeaturedBooks();
-  Future<List<BookModel>> getNewestBooks();
+  Future<List<BookModel>> getFeaturedBooks({int pageNumber = 0});
+  Future<List<BookModel>> getNewestBooks({int pageNumber = 0});
 }
 
 class BooksRemoteDataSourceImpl implements BooksRemoteDataSource {
@@ -16,22 +16,25 @@ class BooksRemoteDataSourceImpl implements BooksRemoteDataSource {
   const BooksRemoteDataSourceImpl({required this.apiService});
 
   @override
-  Future<List<BookModel>> getFeaturedBooks() async {
-    return getBooks(orderBy: ApiConstants.orderRelevance);
+  Future<List<BookModel>> getFeaturedBooks({int pageNumber = 0}) async {
+    return getBooks(
+        orderBy: ApiConstants.orderRelevance, pageNumber: pageNumber);
   }
 
   @override
-  Future<List<BookModel>> getNewestBooks() async {
-    return getBooks(orderBy: ApiConstants.orderNewest);
+  Future<List<BookModel>> getNewestBooks({int pageNumber = 0}) async {
+    return getBooks(orderBy: ApiConstants.orderNewest, pageNumber: pageNumber);
   }
 
-  Future<List<BookModel>> getBooks({required String orderBy}) async {
+  Future<List<BookModel>> getBooks(
+      {required String orderBy, int pageNumber = 0}) async {
+    final startIndex = pageNumber * 10;
     final response = await apiService.getVolumes(
-      query: 'programming',
-      filter: ApiConstants.filterFreeEbooks,
-      maxResults: ApiConstants.defaultMaxResults,
-      orderBy: orderBy,
-    );
+        query: 'programming',
+        filter: ApiConstants.filterFreeEbooks,
+        maxResults: ApiConstants.defaultMaxResults,
+        orderBy: orderBy,
+        startIndex: startIndex);
 
     return processResponse(response);
   }
