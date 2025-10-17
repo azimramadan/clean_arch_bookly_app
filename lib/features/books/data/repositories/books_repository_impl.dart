@@ -17,64 +17,65 @@ class BooksRepositoryImpl implements BooksRepository {
   });
 
   @override
-  Future<Either<Failure, List<BookEntity>>> getFeaturedBooks() async {
-    try {
-      final remoteBooks = await remoteDataSource.getFeaturedBooks();
-      await localDataSource.cacheFeaturedBooks(remoteBooks);
-      return Right(remoteBooks.cast<BookEntity>());
-    } on DioException catch (e) {
-      var message = ServerFailure.fromDioError(e).message;
-      return await getFeaturedBooksFromCache(
-        errorMessage: 'ServerFailure: $message',
-      );
-    } on ServerException catch (e) {
-      var message = ServerFailure.fromResponse(
-        response: e.responseData,
-        statusCode: e.statusCode,
-      ).message;
-      return await getFeaturedBooksFromCache(
-        errorMessage: 'ServerFailure: $message',
-      );
-    } catch (e) {
-      return await getFeaturedBooksFromCache(
-        errorMessage: 'Unexpected error: ${e.toString()}',
-      );
-    }
+  Future<Either<Failure, List<BookEntity>>> getFeaturedBooks(
+      {int pageNumber = 0}) async {
+    final cachedResult =
+        await getFeaturedBooksFromCache(pageNumber: pageNumber);
+    return cachedResult.fold(
+      (failure) async {
+        try {
+          final remoteBooks =
+              await remoteDataSource.getFeaturedBooks(pageNumber: pageNumber);
+          await localDataSource.cacheFeaturedBooks(remoteBooks);
+          return Right(remoteBooks.cast<BookEntity>());
+        } on DioException catch (e) {
+          return left(ServerFailure.fromDioError(e));
+        } on ServerException catch (e) {
+          return left(ServerFailure.fromResponse(
+            response: e.responseData,
+            statusCode: e.statusCode,
+          ));
+        } catch (e) {
+          return left(ServerFailure(message: e.toString()));
+        }
+      },
+      (cachedBooks) => Right(cachedBooks),
+    );
   }
 
   @override
-  Future<Either<Failure, List<BookEntity>>> getNewestBooks() async {
-    try {
-      final remoteBooks = await remoteDataSource.getNewestBooks();
-      await localDataSource.cacheNewestBooks(remoteBooks);
-      return Right(remoteBooks.cast<BookEntity>());
-    } on DioException catch (e) {
-      var message = ServerFailure.fromDioError(e).message;
-      return await getNewestBooksFromCache(
-        errorMessage: 'ServerFailure: $message',
-      );
-    } on ServerException catch (e) {
-      var message = ServerFailure.fromResponse(
-        response: e.responseData,
-        statusCode: e.statusCode,
-      ).message;
-      return await getNewestBooksFromCache(
-        errorMessage: 'ServerFailure: $message',
-      );
-    } catch (e) {
-      return await getNewestBooksFromCache(
-        errorMessage: 'Unexpected error: ${e.toString()}',
-      );
-    }
+  Future<Either<Failure, List<BookEntity>>> getNewestBooks(
+      {int pageNumber = 0}) async {
+    final cachedResult = await getNewestBooksFromCache(pageNumber: pageNumber);
+    return cachedResult.fold(
+      (failure) async {
+        try {
+          final remoteBooks =
+              await remoteDataSource.getNewestBooks(pageNumber: pageNumber);
+          await localDataSource.cacheNewestBooks(remoteBooks);
+          return Right(remoteBooks.cast<BookEntity>());
+        } on DioException catch (e) {
+          return left(ServerFailure.fromDioError(e));
+        } on ServerException catch (e) {
+          return left(ServerFailure.fromResponse(
+            response: e.responseData,
+            statusCode: e.statusCode,
+          ));
+        } catch (e) {
+          return left(ServerFailure(message: e.toString()));
+        }
+      },
+      (cachedBooks) => Right(cachedBooks),
+    );
   }
 
   Future<Either<Failure, List<BookEntity>>> getFeaturedBooksFromCache(
-      {required String errorMessage}) async {
+      {int pageNumber = 0}) async {
     try {
-      final cachedBooks = await localDataSource.getCachedFeaturedBooks();
+      final cachedBooks =
+          await localDataSource.getCachedFeaturedBooks(pageNumber: pageNumber);
       if (cachedBooks.isEmpty) {
-        return Left(
-            CacheFailure(message: 'No cached data available. $errorMessage'));
+        return const Left(CacheFailure(message: 'No cached data available.'));
       }
       return Right(cachedBooks.cast<BookEntity>());
     } catch (e) {
@@ -83,12 +84,12 @@ class BooksRepositoryImpl implements BooksRepository {
   }
 
   Future<Either<Failure, List<BookEntity>>> getNewestBooksFromCache(
-      {required String errorMessage}) async {
+      {int pageNumber = 0}) async {
     try {
-      final cachedBooks = await localDataSource.getCachedNewestBooks();
+      final cachedBooks =
+          await localDataSource.getCachedNewestBooks(pageNumber: pageNumber);
       if (cachedBooks.isEmpty) {
-        return Left(
-            CacheFailure(message: 'No cached data available. $errorMessage'));
+        return const Left(CacheFailure(message: 'No cached data available.'));
       }
       return Right(cachedBooks.cast<BookEntity>());
     } catch (e) {
