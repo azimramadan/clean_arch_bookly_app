@@ -40,7 +40,8 @@ class ServerFailure extends Failure {
         final statusCode = e.response?.statusCode;
         final data = e.response?.data;
         if (statusCode != null) {
-          return ServerFailure.fromResponse(statusCode, data);
+          return ServerFailure.fromResponse(
+              statusCode: statusCode, response: data);
         }
         return ServerFailure(
           message: '📡 The server returned an invalid response.',

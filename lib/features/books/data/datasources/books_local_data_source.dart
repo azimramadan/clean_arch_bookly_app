@@ -4,8 +4,8 @@ import 'package:bookly/features/books/data/models/book_model/book_model.dart';
 abstract class BooksLocalDataSource {
   Future<void> cacheNewestBooks(List<BookModel> books);
   Future<void> cacheFeaturedBooks(List<BookModel> books);
-  Future<List<BookModel>> getCachedFeaturedBooks();
-  Future<List<BookModel>> getCachedNewestBooks();
+  Future<List<BookModel>> getCachedFeaturedBooks({int pageNumber = 0});
+  Future<List<BookModel>> getCachedNewestBooks({int pageNumber = 0});
 }
 
 class BooksLocalDataSourceImpl implements BooksLocalDataSource {
@@ -32,20 +32,36 @@ class BooksLocalDataSourceImpl implements BooksLocalDataSource {
   }
 
   @override
-  Future<List<BookModel>> getCachedFeaturedBooks() async {
+  Future<List<BookModel>> getCachedFeaturedBooks({int pageNumber = 0}) async {
     final box = HiveHelper.featuredBooksBox;
 
     if (box.isEmpty) return const [];
+    final startIndex = pageNumber * 10;
+    final endIndex = startIndex + 10;
 
-    return box.values.toList();
+    final cachedBooks = box.values.toList();
+    if (startIndex >= cachedBooks.length) return const [];
+
+    return cachedBooks.sublist(
+      startIndex,
+      endIndex > cachedBooks.length ? cachedBooks.length : endIndex,
+    );
   }
 
   @override
-  Future<List<BookModel>> getCachedNewestBooks() async {
+  Future<List<BookModel>> getCachedNewestBooks({int pageNumber = 0}) async {
     final box = HiveHelper.newestBooksBox;
 
     if (box.isEmpty) return const [];
+    final startIndex = pageNumber * 10;
+    final endIndex = startIndex + 10;
 
-    return box.values.toList();
+    final cachedBooks = box.values.toList();
+    if (startIndex >= cachedBooks.length) return const [];
+
+    return cachedBooks.sublist(
+      startIndex,
+      endIndex > cachedBooks.length ? cachedBooks.length : endIndex,
+    );
   }
 }
