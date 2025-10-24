@@ -1,13 +1,21 @@
 import 'package:bookly/constants.dart';
 import 'package:bookly/core/utils/app_router.dart';
-import 'package:bookly/core/utils/hive_helper.dart';
+import 'package:bookly/core/utils/helpers/hive_helper.dart';
+import 'package:bookly/simple_bloc_observer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env");
+
+  Bloc.observer = SimpleBlocObserver();
+
   await HiveHelper.init();
+
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
       statusBarColor: kPrimaryColor,

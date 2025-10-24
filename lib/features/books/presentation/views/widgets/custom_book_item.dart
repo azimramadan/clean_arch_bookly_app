@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:bookly/core/utils/assets.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -27,7 +28,7 @@ class CustomBookImage extends StatelessWidget {
             color: Colors.red,
             image: DecorationImage(
               fit: BoxFit.fill,
-              image: AssetImage(imagePath),
+              image: CachedNetworkImageProvider(imagePath),
             ),
           ),
           child: const Align(

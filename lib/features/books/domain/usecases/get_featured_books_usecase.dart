@@ -4,13 +4,13 @@ import 'package:bookly/features/books/domain/entities/book_entity.dart';
 import 'package:bookly/features/books/domain/repositories/books_repository.dart';
 import 'package:dartz/dartz.dart';
 
-class GetFeaturedBooksUseCase extends UseCase<List<BookEntity>, NoParams> {
+class GetFeaturedBooksUseCase extends UseCase<List<BookEntity>, int> {
   final BooksRepository booksRepository;
 
   GetFeaturedBooksUseCase({required this.booksRepository});
 
   @override
-  Future<Either<Failure, List<BookEntity>>> call(NoParams params) async {
-    return await booksRepository.getFeaturedBooks();
+  Future<Either<Failure, List<BookEntity>>> call(int pageNumber) async {
+    return await booksRepository.getFeaturedBooks(pageNumber: pageNumber);
   }
 }

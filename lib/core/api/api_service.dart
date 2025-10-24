@@ -2,22 +2,17 @@ import 'package:dio/dio.dart';
 
 import 'api_constants.dart';
 
-abstract class ApiService {
-  Future<Response> getVolumes({
-    required String query,
-    String? filter,
-    int? maxResults,
-    String? orderBy,
-    int? startIndex,
-  });
-}
+class ApiService {
+  late final Dio _dio;
 
-class ApiServiceImpl implements ApiService {
-  final Dio dio;
-
-  const ApiServiceImpl({required this.dio});
-
-  @override
+  ApiService() {
+    _dio = Dio(BaseOptions(
+      baseUrl: ApiConstants.baseUrl,
+      // connectTimeout: ApiConstants.connectTimeout,
+      // receiveTimeout: ApiConstants.receiveTimeout,
+      // sendTimeout: ApiConstants.sendTimeout,
+    ));
+  }
   Future<Response> getVolumes({
     required String query,
     String? filter,
@@ -25,7 +20,10 @@ class ApiServiceImpl implements ApiService {
     String? orderBy,
     int? startIndex,
   }) async {
-    final response = await dio.get(
+    if (!ApiConstants.hasApiKey) {
+      throw Exception('API Key is missing. Please add it to .env file');
+    }
+    final response = await _dio.get(
       ApiConstants.volumes,
       queryParameters: {
         ApiConstants.queryKey: query,
@@ -34,6 +32,7 @@ class ApiServiceImpl implements ApiService {
             maxResults ?? ApiConstants.defaultMaxResults,
         if (orderBy != null) ApiConstants.orderByKey: orderBy,
         if (startIndex != null) ApiConstants.startIndexKey: startIndex,
+        ApiConstants.apiKeyParam: ApiConstants.apiKey,
       },
     );
 

@@ -1,37 +1,57 @@
-import 'package:bookly/core/utils/assets.dart';
+import 'package:bookly/features/books/domain/entities/book_entity.dart';
+import 'package:bookly/features/books/presentation/manager/featured_books_cubit/featured_books_cubit.dart';
 import 'package:bookly/features/books/presentation/views/widgets/custom_book_item.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class FeaturedBooksListView extends StatefulWidget {
   const FeaturedBooksListView({
     super.key,
     this.onPageChanged,
+    required this.books,
   });
 
   final Function(int)? onPageChanged;
-
+  final List<BookEntity> books;
   @override
   FeaturedBooksListViewState createState() => FeaturedBooksListViewState();
 }
 
 class FeaturedBooksListViewState extends State<FeaturedBooksListView> {
   late ScrollController _scrollController;
-
+  int _booksLength = 0;
   int _currentIndex = 0;
   double _currentScrollOffset = 0;
-
-  final List<String> bookImages =
-      List.generate(10, (index) => Assets.imagesBookImage);
 
   final double _baseItemWidth = 140;
   final double _largeItemWidth = 160;
 
+  int nextPage = 1;
+  bool isLoadingMore = false;
   @override
   void initState() {
     super.initState();
-
+    _booksLength = widget.books.length;
     _scrollController = ScrollController();
     _scrollController.addListener(_onScroll);
+    _scrollController.addListener(_scrollListener);
+  }
+
+  void _scrollListener() async {
+    final cubit = context.read<FeaturedBooksCubit>();
+    final state = cubit.state;
+
+    if (isLoadingMore || state is FeaturedBooksPaginationLoading) return;
+
+    if (_scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - 200) {
+      setState(() => isLoadingMore = true);
+
+      await cubit.getFeaturedBooks(pageNumber: nextPage++);
+
+      if (!mounted) return;
+      setState(() => isLoadingMore = false);
+    }
   }
 
   @override
@@ -45,17 +65,15 @@ class FeaturedBooksListViewState extends State<FeaturedBooksListView> {
     setState(() {
       _currentScrollOffset = _scrollController.offset;
 
-      // حساب العنصر المحوري بناءً على الربع الأول من الشاشة
       double screenWidth = MediaQuery.of(context).size.width;
       double quarterScreen = screenWidth * 0.25;
 
-      // العثور على العنصر الذي يقع في الربع الأول
       int newFocusedIndex = -1;
       double minDistance = double.infinity;
 
-      for (int i = 0; i < bookImages.length; i++) {
+      for (int i = 0; i < widget.books.length; i++) {
         double itemPosition = _getItemPosition(i);
-        // التحقق من أن العنصر في الربع الأول من الشاشة
+
         if (itemPosition >= 0 && itemPosition <= quarterScreen) {
           double distanceFromQuarter = (itemPosition - quarterScreen / 2).abs();
           if (distanceFromQuarter < minDistance) {
@@ -65,18 +83,16 @@ class FeaturedBooksListViewState extends State<FeaturedBooksListView> {
         }
       }
 
-      // إذا لم نجد عنصر في الربع الأول، نأخذ الأقرب للبداية
       if (newFocusedIndex == -1) {
         double totalItemWidth = _baseItemWidth;
         newFocusedIndex = (_currentScrollOffset / totalItemWidth).round();
-        newFocusedIndex = newFocusedIndex.clamp(0, bookImages.length - 1);
+        if (widget.books.isEmpty) return;
+        newFocusedIndex = newFocusedIndex.clamp(0, _booksLength - 1);
       }
 
-      // عند تغيير العنصر المحوري
       if (newFocusedIndex != _currentIndex) {
         _currentIndex = newFocusedIndex;
 
-        // استدعاء callback إذا كان موجود
         if (widget.onPageChanged != null) {
           widget.onPageChanged!(_currentIndex);
         }
@@ -84,13 +100,11 @@ class FeaturedBooksListViewState extends State<FeaturedBooksListView> {
     });
   }
 
-  // حساب موقع العنصر على الشاشة
   double _getItemPosition(int index) {
     double totalItemWidth = _baseItemWidth;
     return (index * totalItemWidth) - _currentScrollOffset;
   }
 
-  // حساب عرض العنصر
   double _getItemWidth(int index) {
     if (index == _currentIndex) {
       return _largeItemWidth;
@@ -99,8 +113,9 @@ class FeaturedBooksListViewState extends State<FeaturedBooksListView> {
     }
   }
 
-  // التمرير إلى عنصر معين
   void scrollToIndex(int index) {
+    if (!_scrollController.hasClients || widget.books.isEmpty) return;
+
     double totalItemWidth = _baseItemWidth;
     double targetOffset = index * totalItemWidth;
 
@@ -122,7 +137,7 @@ class FeaturedBooksListViewState extends State<FeaturedBooksListView> {
           left: 20,
         ),
         physics: const BouncingScrollPhysics(),
-        itemCount: bookImages.length,
+        itemCount: _booksLength,
         itemBuilder: (BuildContext context, int index) {
           bool isActive = index == _currentIndex;
           double width = _getItemWidth(index);
@@ -139,12 +154,18 @@ class FeaturedBooksListViewState extends State<FeaturedBooksListView> {
               },
               child: CustomBookImage(
                 scale: isActive ? .95 : 0.80,
-                imagePath: bookImages[index],
+                imagePath: widget.books[index].imageUrl,
               ),
             ),
           );
         },
       ),
     );
+  }
+
+  @override
+  void didUpdateWidget(covariant FeaturedBooksListView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _booksLength = widget.books.length;
   }
 }
