@@ -1,13 +1,14 @@
+import 'package:bookly/features/books/domain/entities/book_entity.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../../constants.dart';
-import '../../../../../core/utils/assets.dart';
 import '../../../../../core/utils/styles.dart';
 import 'book_rating.dart';
 
 class BookListViewItem extends StatelessWidget {
-  const BookListViewItem({super.key});
-
+  const BookListViewItem({super.key, required this.book});
+  final BookEntity book;
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -22,12 +23,9 @@ class BookListViewItem extends StatelessWidget {
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8),
                     color: Colors.red,
-                    image: const DecorationImage(
-                      fit: BoxFit.fill,
-                      image: AssetImage(
-                        Assets.imagesBookImage,
-                      ),
-                    )),
+                    image: DecorationImage(
+                        fit: BoxFit.fill,
+                        image: CachedNetworkImageProvider(book.imageUrl))),
               ),
             ),
             const SizedBox(

@@ -11,12 +11,17 @@ import 'package:google_fonts/google_fonts.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  setupServiceLocator();
   await dotenv.load(fileName: ".env");
+  await _initializeApp();
+  runApp(const Bookly());
+}
+
+Future<void> _initializeApp() async {
+  await HiveHelper.init();
+
+  setupServiceLocator();
 
   Bloc.observer = SimpleBlocObserver();
-
-  await HiveHelper.init();
 
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
@@ -24,7 +29,6 @@ void main() async {
       statusBarIconBrightness: Brightness.light,
     ),
   );
-  runApp(const Bookly());
 }
 
 class Bookly extends StatelessWidget {
@@ -35,10 +39,14 @@ class Bookly extends StatelessWidget {
     return MaterialApp.router(
       routerConfig: AppRouter.router,
       debugShowCheckedModeBanner: false,
-      theme: ThemeData.dark().copyWith(
-        scaffoldBackgroundColor: kPrimaryColor,
-        textTheme: GoogleFonts.montserratTextTheme(ThemeData.dark().textTheme),
-      ),
+      theme: _buildAppTheme(),
+    );
+  }
+
+  ThemeData _buildAppTheme() {
+    return ThemeData.dark().copyWith(
+      scaffoldBackgroundColor: kPrimaryColor,
+      textTheme: GoogleFonts.montserratTextTheme(ThemeData.dark().textTheme),
     );
   }
 }
