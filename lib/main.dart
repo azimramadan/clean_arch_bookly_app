@@ -1,4 +1,5 @@
 import 'package:bookly/constants.dart';
+import 'package:bookly/core/service_locator.dart';
 import 'package:bookly/core/utils/app_router.dart';
 import 'package:bookly/core/utils/helpers/hive_helper.dart';
 import 'package:bookly/simple_bloc_observer.dart';
@@ -10,6 +11,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  setupServiceLocator();
   await dotenv.load(fileName: ".env");
 
   Bloc.observer = SimpleBlocObserver();

@@ -1,9 +1,6 @@
-import 'package:bookly/core/api/api_service.dart';
-import 'package:bookly/features/books/data/datasources/books_local_data_source.dart';
-import 'package:bookly/features/books/data/datasources/books_remote_data_source.dart';
-import 'package:bookly/features/books/data/repositories/books_repository_impl.dart';
-import 'package:bookly/features/books/domain/usecases/get_featured_books_usecase.dart';
+import 'package:bookly/core/service_locator.dart';
 import 'package:bookly/features/books/presentation/manager/featured_books_cubit/featured_books_cubit.dart';
+import 'package:bookly/features/books/presentation/manager/newest_books_cubit/newest_books_cubit.dart';
 import 'package:bookly/features/books/presentation/views/widgets/books_view_body.dart';
 import 'package:bookly/features/books/presentation/views/widgets/glassmorphism_bottom_navigation_bar.dart';
 import 'package:flutter/material.dart';
@@ -14,16 +11,15 @@ class BooksView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => FeaturedBooksCubit(
-        getFeaturedBooksUseCase: GetFeaturedBooksUseCase(
-          booksRepository: BooksRepositoryImpl(
-              remoteDataSource: BooksRemoteDataSourceImpl(
-                apiService: ApiService(),
-              ),
-              localDataSource: const BooksLocalDataSourceImpl()),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => getIt<FeaturedBooksCubit>()..getFeaturedBooks(),
         ),
-      )..getFeaturedBooks(),
+        BlocProvider(
+          create: (context) => getIt<NewestBooksCubit>()..getNewestBooks(),
+        ),
+      ],
       child: const Scaffold(
         body: Stack(
           children: [
