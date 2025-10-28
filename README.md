@@ -611,7 +611,7 @@ flutter run
 ## 📸 App Screens
 
 <div align="center">
-<img src="app-ui.jpg"/>
+<img src="ui-app.jpg"/>
 </div>
 
 ---
